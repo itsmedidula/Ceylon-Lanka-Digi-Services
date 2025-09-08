@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -171,6 +170,14 @@
         .btn-outline:hover {
             background: white;
             color: var(--primary);
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+        }
+        
+        .btn-danger:hover {
+            background: #d32f2f;
         }
         
         /* Services Section */
@@ -438,6 +445,48 @@
             display: block;
         }
         
+        /* Manage Services */
+        .manage-services {
+            margin-top: 30px;
+            display: none;
+        }
+        
+        .manage-services.active {
+            display: block;
+        }
+        
+        .manage-services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .manage-service-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .manage-service-content {
+            padding: 20px;
+        }
+        
+        .manage-service-content h3 {
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+        
+        .manage-service-content p {
+            color: var(--gray);
+            margin-bottom: 15px;
+        }
+        
+        .manage-service-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
         /* Footer */
         footer {
             background: var(--dark);
@@ -584,6 +633,10 @@
             .order-form {
                 padding: 25px;
             }
+            
+            .manage-service-actions {
+                flex-direction: column;
+            }
         }
         
         /* Notification */
@@ -611,6 +664,26 @@
         
         .notification.error {
             background: var(--danger);
+        }
+        
+        .notification.info {
+            background: var(--primary);
+        }
+        
+        /* Loading Spinner */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -665,6 +738,9 @@
             </div>
             <div class="services-grid" id="servicesContainer">
                 <!-- Services will be loaded from MongoDB -->
+                <div class="loading-container" id="servicesLoading">
+                    <div class="loading"></div> Loading services...
+                </div>
             </div>
         </div>
     </section>
@@ -798,7 +874,7 @@
                         </div>
                         <h3>Manage Services</h3>
                         <p>Edit or remove existing services</p>
-                        <button class="btn" onclick="loadServices()">Manage Services</button>
+                        <button class="btn" onclick="showManageServices()">Manage Services</button>
                     </div>
                     
                     <div class="admin-card">
@@ -810,34 +886,44 @@
                         <button class="btn" onclick="loadOrders()">View Orders</button>
                     </div>
                 </div>
-            </div>
-            
-            <div class="add-service-form" id="addServiceForm">
-                <h2>Add New Service</h2>
-                <form id="serviceForm">
-                    <div class="form-group">
-                        <label for="serviceTitle">Service Title</label>
-                        <input type="text" id="serviceTitle" class="form-control" placeholder="Enter service title" required>
+                
+                <div class="add-service-form" id="addServiceForm">
+                    <h2>Add New Service</h2>
+                    <form id="serviceForm">
+                        <div class="form-group">
+                            <label for="serviceTitle">Service Title</label>
+                            <input type="text" id="serviceTitle" class="form-control" placeholder="Enter service title" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="serviceDescription">Description</label>
+                            <textarea id="serviceDescription" class="form-control" rows="4" placeholder="Enter service description" required></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="servicePrice">Price (Rs.)</label>
+                            <input type="number" id="servicePriceInput" class="form-control" placeholder="Enter price" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="serviceImage">Upload Image</label>
+                            <input type="file" id="serviceImage" class="form-control" accept="image/*" required>
+                        </div>
+                        
+                        <button type="submit" class="btn">Add Service</button>
+                        <button type="button" class="btn btn-outline" onclick="hideAddServiceForm()">Cancel</button>
+                    </form>
+                </div>
+                
+                <div class="manage-services" id="manageServices">
+                    <h2>Manage Services</h2>
+                    <div class="manage-services-grid" id="manageServicesContainer">
+                        <!-- Services will be loaded here -->
+                        <div class="loading-container" id="manageServicesLoading">
+                            <div class="loading"></div> Loading services...
+                        </div>
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="serviceDescription">Description</label>
-                        <textarea id="serviceDescription" class="form-control" rows="4" placeholder="Enter service description" required></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="servicePrice">Price (Rs.)</label>
-                        <input type="number" id="servicePriceInput" class="form-control" placeholder="Enter price" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="serviceImage">Upload Image</label>
-                        <input type="file" id="serviceImage" class="form-control" accept="image/*" required>
-                    </div>
-                    
-                    <button type="submit" class="btn">Add Service</button>
-                    <button type="button" class="btn btn-outline" onclick="hideAddServiceForm()">Cancel</button>
-                </form>
+                </div>
             </div>
         </div>
     </section>
@@ -886,63 +972,95 @@
     <div class="notification" id="notification"></div>
 
     <script>
-        // MongoDB connection details
-        const MONGO_URI = "mongodb+srv://Didula:DidulaMD@didulamd.mgwjqat.mongodb.net/Didulamd?retryWrites=true&w=majority";
+        // Configuration
+        const API_BASE_URL = 'https://your-api-endpoint.com/api'; // Replace with your actual API endpoint
         const ADMIN_USER = "ceylolanka";
         const ADMIN_PASS = "ceylon2007lanka";
         const ADMIN_WHATSAPP = "94783288782";
         
         // DOM Elements
         const servicesContainer = document.getElementById('servicesContainer');
+        const manageServicesContainer = document.getElementById('manageServicesContainer');
         const orderForm = document.getElementById('orderForm');
         const adminLoginForm = document.getElementById('adminLoginForm');
         const adminPanel = document.getElementById('adminPanel');
         const loginForm = document.getElementById('loginForm');
         const addServiceForm = document.getElementById('addServiceForm');
+        const manageServices = document.getElementById('manageServices');
         const notification = document.getElementById('notification');
+        const servicesLoading = document.getElementById('servicesLoading');
+        const manageServicesLoading = document.getElementById('manageServicesLoading');
         
-        // Sample services data (in a real app, this would come from MongoDB)
-        let services = [
-            {
-                id: 1,
-                title: "Professional Web Design",
-                description: "Custom website design with modern UI/UX principles. Fully responsive and optimized for all devices.",
-                price: "15,000",
-                image: "https://images.unsplash.com/photo-1551650975-87deedd944c3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80"
-            },
-            {
-                id: 2,
-                title: "Digital Marketing Package",
-                description: "Comprehensive digital marketing strategy including SEO, social media, and email campaigns.",
-                price: "25,000",
-                image: "https://images.unsplash.com/photo-1553877522-43269d4ea984?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80"
-            },
-            {
-                id: 3,
-                title: "Mobile App Development",
-                description: "Custom mobile applications for iOS and Android platforms with modern features.",
-                price: "45,000",
-                image: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80"
-            }
-        ];
-        
-        // Sample orders data (in a real app, this would come from MongoDB)
-        let orders = [];
+        // State
+        let services = [];
+        let isAdminLoggedIn = false;
         
         // Initialize the application
         document.addEventListener('DOMContentLoaded', function() {
             loadServices();
         });
         
-        // Function to load services from MongoDB
-        function loadServices() {
-            // In a real implementation, this would fetch from MongoDB
-            renderServices();
+        // Function to show notification
+        function showNotification(message, type) {
+            notification.textContent = message;
+            notification.className = 'notification ' + type + ' show';
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Function to load services from API
+        async function loadServices() {
+            servicesLoading.style.display = 'block';
+            
+            try {
+                // In a real implementation, this would fetch from your API
+                // const response = await axios.get(`${API_BASE_URL}/services`);
+                // services = response.data;
+                
+                // For demo purposes, we'll use sample data
+                services = [
+                    {
+                        _id: "1",
+                        title: "Professional Web Design",
+                        description: "Custom website design with modern UI/UX principles. Fully responsive and optimized for all devices.",
+                        price: "15,000",
+                        image: "https://images.unsplash.com/photo-1551650975-87deedd944c3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80"
+                    },
+                    {
+                        _id: "2",
+                        title: "Digital Marketing Package",
+                        description: "Comprehensive digital marketing strategy including SEO, social media, and email campaigns.",
+                        price: "25,000",
+                        image: "https://images.unsplash.com/photo-1553877522-43269d4ea984?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80"
+                    },
+                    {
+                        _id: "3",
+                        title: "Mobile App Development",
+                        description: "Custom mobile applications for iOS and Android platforms with modern features.",
+                        price: "45,000",
+                        image: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80"
+                    }
+                ];
+                
+                renderServices();
+            } catch (error) {
+                console.error('Error loading services:', error);
+                showNotification('Failed to load services', 'error');
+            } finally {
+                servicesLoading.style.display = 'none';
+            }
         }
         
         // Function to render services
         function renderServices() {
             servicesContainer.innerHTML = '';
+            
+            if (services.length === 0) {
+                servicesContainer.innerHTML = '<p>No services available at the moment.</p>';
+                return;
+            }
             
             services.forEach(service => {
                 const serviceCard = document.createElement('div');
@@ -962,10 +1080,53 @@
             });
         }
         
-        // Function to load orders from MongoDB
-        function loadOrders() {
-            // In a real implementation, this would fetch from MongoDB
-            showNotification('Orders loaded successfully', 'success');
+        // Function to load services for management
+        async function loadManageServices() {
+            manageServicesLoading.style.display = 'block';
+            
+            try {
+                // In a real implementation, this would fetch from your API
+                // const response = await axios.get(`${API_BASE_URL}/services`);
+                // services = response.data;
+                
+                // For demo purposes, we'll use the same sample data
+                renderManageServices();
+            } catch (error) {
+                console.error('Error loading services:', error);
+                showNotification('Failed to load services', 'error');
+            } finally {
+                manageServicesLoading.style.display = 'none';
+            }
+        }
+        
+        // Function to render services for management
+        function renderManageServices() {
+            manageServicesContainer.innerHTML = '';
+            
+            if (services.length === 0) {
+                manageServicesContainer.innerHTML = '<p>No services available to manage.</p>';
+                return;
+            }
+            
+            services.forEach(service => {
+                const serviceCard = document.createElement('div');
+                serviceCard.className = 'manage-service-card';
+                serviceCard.innerHTML = `
+                    <div class="service-img">
+                        <img src="${service.image}" alt="${service.title}">
+                    </div>
+                    <div class="manage-service-content">
+                        <h3>${service.title}</h3>
+                        <p>${service.description}</p>
+                        <div class="price">Rs. ${service.price}</div>
+                        <div class="manage-service-actions">
+                            <button class="btn" onclick="editService('${service._id}')">Edit</button>
+                            <button class="btn btn-danger" onclick="deleteService('${service._id}')">Delete</button>
+                        </div>
+                    </div>
+                `;
+                manageServicesContainer.appendChild(serviceCard);
+            });
         }
         
         // Function to select a service
@@ -999,14 +1160,52 @@
             addServiceForm.classList.remove('active');
         }
         
-        // Function to show notification
-        function showNotification(message, type) {
-            notification.textContent = message;
-            notification.className = 'notification ' + type + ' show';
+        // Function to show manage services
+        function showManageServices() {
+            manageServices.classList.add('active');
+            loadManageServices();
+        }
+        
+        // Function to hide manage services
+        function hideManageServices() {
+            manageServices.classList.remove('active');
+        }
+        
+        // Function to edit service
+        function editService(id) {
+            showNotification(`Edit service with ID: ${id} - Feature coming soon`, 'info');
+        }
+        
+        // Function to delete service
+        async function deleteService(id) {
+            if (!confirm('Are you sure you want to delete this service?')) return;
             
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
+            try {
+                // In a real implementation, this would delete from your API
+                // await axios.delete(`${API_BASE_URL}/services/${id}`);
+                
+                // For demo purposes, we'll remove from local array
+                services = services.filter(service => service._id !== id);
+                renderManageServices();
+                showNotification('Service deleted successfully', 'success');
+            } catch (error) {
+                console.error('Error deleting service:', error);
+                showNotification('Failed to delete service', 'error');
+            }
+        }
+        
+        // Function to load orders
+        async function loadOrders() {
+            try {
+                // In a real implementation, this would fetch from your API
+                // const response = await axios.get(`${API_BASE_URL}/orders`);
+                // const orders = response.data;
+                
+                showNotification('Orders loaded successfully', 'success');
+            } catch (error) {
+                console.error('Error loading orders:', error);
+                showNotification('Failed to load orders', 'error');
+            }
         }
         
         // Admin login
@@ -1017,6 +1216,7 @@
             const password = document.getElementById('adminPass').value;
             
             if (username === ADMIN_USER && password === ADMIN_PASS) {
+                isAdminLoggedIn = true;
                 loginForm.style.display = 'none';
                 adminPanel.classList.add('active');
                 showNotification('Admin login successful', 'success');
@@ -1027,40 +1227,55 @@
         
         // Admin logout
         function logoutAdmin() {
+            isAdminLoggedIn = false;
             loginForm.style.display = 'block';
             adminPanel.classList.remove('active');
             addServiceForm.classList.remove('active');
+            manageServices.classList.remove('active');
             showNotification('Logged out successfully', 'success');
         }
         
         // Add service form submission
-        document.getElementById('serviceForm').addEventListener('submit', function(e) {
+        document.getElementById('serviceForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const title = document.getElementById('serviceTitle').value;
             const description = document.getElementById('serviceDescription').value;
             const price = document.getElementById('servicePriceInput').value;
+            const imageFile = document.getElementById('serviceImage').files[0];
             
-            // In a real implementation, this would save to MongoDB
+            // Create service object
             const newService = {
-                id: services.length + 1,
                 title: title,
                 description: description,
                 price: price,
+                // In a real implementation, you would upload the image and get a URL
                 image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80"
             };
             
-            services.push(newService);
-            renderServices();
-            hideAddServiceForm();
-            showNotification('Service added successfully', 'success');
-            
-            // Reset form
-            this.reset();
+            try {
+                // In a real implementation, this would save to your API
+                // const response = await axios.post(`${API_BASE_URL}/services`, newService);
+                // services.push(response.data);
+                
+                // For demo purposes, we'll add to local array
+                newService._id = (services.length + 1).toString();
+                services.push(newService);
+                
+                renderServices();
+                hideAddServiceForm();
+                showNotification('Service added successfully', 'success');
+                
+                // Reset form
+                this.reset();
+            } catch (error) {
+                console.error('Error adding service:', error);
+                showNotification('Failed to add service', 'error');
+            }
         });
         
         // Order form submission
-        orderForm.addEventListener('submit', function(e) {
+        orderForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const name = document.getElementById('customerName').value;
@@ -1069,9 +1284,8 @@
             const servicePrice = document.getElementById('servicePrice').value;
             const paymentProof = document.getElementById('paymentProof').files[0];
             
-            // In a real implementation, this would save to MongoDB
+            // Create order object
             const newOrder = {
-                id: orders.length + 1,
                 customerName: name,
                 whatsapp: whatsapp,
                 serviceName: serviceName,
@@ -1080,22 +1294,28 @@
                 date: new Date().toLocaleString()
             };
             
-            orders.push(newOrder);
-            
-            // Send WhatsApp message to admin
-            const message = `New Order!\n\nCustomer: ${name}\nWhatsApp: ${whatsapp}\nService: ${serviceName}\nPrice: ${servicePrice}\nPayment Proof: ${newOrder.paymentProof}\nDate: ${newOrder.date}`;
-            const encodedMessage = encodeURIComponent(message);
-            const whatsappUrl = `https://wa.me/${ADMIN_WHATSAPP}?text=${encodedMessage}`;
-            
-            // Open WhatsApp in new tab
-            window.open(whatsappUrl, '_blank');
-            
-            showNotification('Order placed successfully! WhatsApp message sent to admin.', 'success');
-            
-            // Reset form
-            this.reset();
-            document.getElementById('paymentDetails').style.display = 'none';
-            document.getElementById('ezcashDetails').style.display = 'none';
+            try {
+                // In a real implementation, this would save to your API
+                // await axios.post(`${API_BASE_URL}/orders`, newOrder);
+                
+                // Send WhatsApp message to admin
+                const message = `New Order!\n\nCustomer: ${name}\nWhatsApp: ${whatsapp}\nService: ${serviceName}\nPrice: ${servicePrice}\nPayment Proof: ${newOrder.paymentProof}\nDate: ${newOrder.date}`;
+                const encodedMessage = encodeURIComponent(message);
+                const whatsappUrl = `https://wa.me/${ADMIN_WHATSAPP}?text=${encodedMessage}`;
+                
+                // Open WhatsApp in new tab
+                window.open(whatsappUrl, '_blank');
+                
+                showNotification('Order placed successfully! WhatsApp message sent to admin.', 'success');
+                
+                // Reset form
+                this.reset();
+                document.getElementById('paymentDetails').style.display = 'none';
+                document.getElementById('ezcashDetails').style.display = 'none';
+            } catch (error) {
+                console.error('Error placing order:', error);
+                showNotification('Failed to place order', 'error');
+            }
         });
         
         // Mobile menu toggle
