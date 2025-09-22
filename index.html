@@ -103,6 +103,8 @@
             display: flex;
             align-items: center;
             gap: 5px;
+            border: none;
+            cursor: pointer;
         }
         
         .cta-button:hover {
@@ -275,6 +277,29 @@
             color: var(--primary);
             font-size: 1.2rem;
             margin-top: 0.5rem;
+        }
+        
+        .order-button {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.2rem;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 1rem;
+            width: 100%;
+            box-shadow: 0 4px 10px rgba(67, 97, 238, 0.3);
+        }
+        
+        .order-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(67, 97, 238, 0.4);
         }
         
         .popular-tag {
@@ -498,6 +523,35 @@
             font-size: 0.9rem;
         }
         
+        /* Quantity Selector */
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .quantity-value {
+            font-weight: 600;
+            min-width: 30px;
+            text-align: center;
+        }
+        
         /* Responsive Design */
         @media (max-width: 992px) {
             .resell-content {
@@ -676,6 +730,14 @@
                         <h3>WhatsApp Unban</h3>
                         <p>Get your WhatsApp account unbanned quickly and efficiently with our professional service.</p>
                         <div class="price">LKR 1200</div>
+                        <div class="quantity-selector">
+                            <button class="quantity-btn minus" data-service="WhatsApp Unban" data-price="1200">-</button>
+                            <span class="quantity-value" id="quantity-1">1</span>
+                            <button class="quantity-btn plus" data-service="WhatsApp Unban" data-price="1200">+</button>
+                        </div>
+                        <button class="order-button" data-service="WhatsApp Unban" data-price="1200">
+                            <i class="fab fa-whatsapp"></i> Order Service
+                        </button>
                     </div>
                 </div>
                 
@@ -688,18 +750,34 @@
                         <h3>Online Courses</h3>
                         <p>Access to premium online courses and educational resources for personal and business growth.</p>
                         <div class="price">LKR 800</div>
+                        <div class="quantity-selector">
+                            <button class="quantity-btn minus" data-service="Online Courses" data-price="800">-</button>
+                            <span class="quantity-value" id="quantity-2">1</span>
+                            <button class="quantity-btn plus" data-service="Online Courses" data-price="800">+</button>
+                        </div>
+                        <button class="order-button" data-service="Online Courses" data-price="800">
+                            <i class="fab fa-whatsapp"></i> Order Service
+                        </button>
                     </div>
                 </div>
                 
                 <!-- Service 3 -->
                 <div class="service-card">
                     <div class="service-image">
-                        <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Meta Ads Service">
+                        <img src="https://images.unsplash.com/photo-155183697821252-0c9137d9fc45?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Meta Ads Service">
                     </div>
                     <div class="service-content">
                         <h3>Meta Ads Service</h3>
                         <p>Professional advertising services on Meta platforms to boost your business reach.</p>
                         <div class="price">LKR 1000</div>
+                        <div class="quantity-selector">
+                            <button class="quantity-btn minus" data-service="Meta Ads Service" data-price="1000">-</button>
+                            <span class="quantity-value" id="quantity-3">1</span>
+                            <button class="quantity-btn plus" data-service="Meta Ads Service" data-price="1000">+</button>
+                        </div>
+                        <button class="order-button" data-service="Meta Ads Service" data-price="1000">
+                            <i class="fab fa-whatsapp"></i> Order Service
+                        </button>
                     </div>
                 </div>
                 
@@ -712,6 +790,14 @@
                         <h3>WhatsApp Channel Ads</h3>
                         <p>Promote your business through WhatsApp channel advertising to reach your audience.</p>
                         <div class="price">LKR 800</div>
+                        <div class="quantity-selector">
+                            <button class="quantity-btn minus" data-service="WhatsApp Channel Ads" data-price="800">-</button>
+                            <span class="quantity-value" id="quantity-4">1</span>
+                            <button class="quantity-btn plus" data-service="WhatsApp Channel Ads" data-price="800">+</button>
+                        </div>
+                        <button class="order-button" data-service="WhatsApp Channel Ads" data-price="800">
+                            <i class="fab fa-whatsapp"></i> Order Service
+                        </button>
                     </div>
                 </div>
                 
@@ -724,6 +810,14 @@
                         <h3>Fake Numbers</h3>
                         <p>Temporary phone numbers for verification, privacy, and testing purposes.</p>
                         <div class="price">LKR 200</div>
+                        <div class="quantity-selector">
+                            <button class="quantity-btn minus" data-service="Fake Numbers" data-price="200">-</button>
+                            <span class="quantity-value" id="quantity-5">1</span>
+                            <button class="quantity-btn plus" data-service="Fake Numbers" data-price="200">+</button>
+                        </div>
+                        <button class="order-button" data-service="Fake Numbers" data-price="200">
+                            <i class="fab fa-whatsapp"></i> Order Service
+                        </button>
                     </div>
                 </div>
                 
@@ -736,6 +830,14 @@
                         <h3>Social Media Boost</h3>
                         <p>Increase followers and engagement on Instagram, TikTok, Facebook, and YouTube.</p>
                         <div class="price">Starting at LKR 500</div>
+                        <div class="quantity-selector">
+                            <button class="quantity-btn minus" data-service="Social Media Boost" data-price="500">-</button>
+                            <span class="quantity-value" id="quantity-6">1</span>
+                            <button class="quantity-btn plus" data-service="Social Media Boost" data-price="500">+</button>
+                        </div>
+                        <button class="order-button" data-service="Social Media Boost" data-price="500">
+                            <i class="fab fa-whatsapp"></i> Order Service
+                        </button>
                     </div>
                 </div>
                 
@@ -748,6 +850,14 @@
                         <h3>T-Shirt Design Pack</h3>
                         <p>Creative t-shirt designs for your business or personal use with commercial license.</p>
                         <div class="price">LKR 400</div>
+                        <div class="quantity-selector">
+                            <button class="quantity-btn minus" data-service="T-Shirt Design Pack" data-price="400">-</button>
+                            <span class="quantity-value" id="quantity-7">1</span>
+                            <button class="quantity-btn plus" data-service="T-Shirt Design Pack" data-price="400">+</button>
+                        </div>
+                        <button class="order-button" data-service="T-Shirt Design Pack" data-price="400">
+                            <i class="fab fa-whatsapp"></i> Order Service
+                        </button>
                     </div>
                 </div>
                 
@@ -760,6 +870,14 @@
                         <h3>WhatsApp Mini Bot</h3>
                         <p>Own customizable WhatsApp bot for automation and customer service solutions.</p>
                         <div class="price">LKR 800</div>
+                        <div class="quantity-selector">
+                            <button class="quantity-btn minus" data-service="WhatsApp Mini Bot" data-price="800">-</button>
+                            <span class="quantity-value" id="quantity-8">1</span>
+                            <button class="quantity-btn plus" data-service="WhatsApp Mini Bot" data-price="800">+</button>
+                        </div>
+                        <button class="order-button" data-service="WhatsApp Mini Bot" data-price="800">
+                            <i class="fab fa-whatsapp"></i> Order Service
+                        </button>
                     </div>
                 </div>
                 
@@ -772,6 +890,14 @@
                         <h3>AI Video Ads</h3>
                         <p>AI-generated video advertisements for your business with professional quality.</p>
                         <div class="price">Starting at LKR 1500</div>
+                        <div class="quantity-selector">
+                            <button class="quantity-btn minus" data-service="AI Video Ads" data-price="1500">-</button>
+                            <span class="quantity-value" id="quantity-9">1</span>
+                            <button class="quantity-btn plus" data-service="AI Video Ads" data-price="1500">+</button>
+                        </div>
+                        <button class="order-button" data-service="AI Video Ads" data-price="1500">
+                            <i class="fab fa-whatsapp"></i> Order Service
+                        </button>
                     </div>
                 </div>
                 
@@ -784,6 +910,14 @@
                         <h3>Add Billing</h3>
                         <p>Heroku LKR 550 | VPS 200$ LKR 650 - Billing solutions for your hosting needs.</p>
                         <div class="price">LKR 550 - 650</div>
+                        <div class="quantity-selector">
+                            <button class="quantity-btn minus" data-service="Add Billing" data-price="550">-</button>
+                            <span class="quantity-value" id="quantity-10">1</span>
+                            <button class="quantity-btn plus" data-service="Add Billing" data-price="550">+</button>
+                        </div>
+                        <button class="order-button" data-service="Add Billing" data-price="550">
+                            <i class="fab fa-whatsapp"></i> Order Service
+                        </button>
                     </div>
                 </div>
                 
@@ -796,6 +930,14 @@
                         <h3>WhatsApp Permanent Ban</h3>
                         <p>Permanent banning service for WhatsApp accounts with professional support.</p>
                         <div class="price">LKR 1500</div>
+                        <div class="quantity-selector">
+                            <button class="quantity-btn minus" data-service="WhatsApp Permanent Ban" data-price="1500">-</button>
+                            <span class="quantity-value" id="quantity-11">1</span>
+                            <button class="quantity-btn plus" data-service="WhatsApp Permanent Ban" data-price="1500">+</button>
+                        </div>
+                        <button class="order-button" data-service="WhatsApp Permanent Ban" data-price="1500">
+                            <i class="fab fa-whatsapp"></i> Order Service
+                        </button>
                     </div>
                 </div>
                 
@@ -808,6 +950,14 @@
                         <h3>Pterodactyl Panel</h3>
                         <p>Deploy bots and scripts with our hosting panel for advanced users.</p>
                         <div class="price">Starting at LKR 1000</div>
+                        <div class="quantity-selector">
+                            <button class="quantity-btn minus" data-service="Pterodactyl Panel" data-price="1000">-</button>
+                            <span class="quantity-value" id="quantity-12">1</span>
+                            <button class="quantity-btn plus" data-service="Pterodactyl Panel" data-price="1000">+</button>
+                        </div>
+                        <button class="order-button" data-service="Pterodactyl Panel" data-price="1000">
+                            <i class="fab fa-whatsapp"></i> Order Service
+                        </button>
                     </div>
                 </div>
             </div>
@@ -969,6 +1119,52 @@
                     });
                 }
             });
+        });
+        
+        // Quantity selector functionality
+        document.querySelectorAll('.quantity-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const service = this.getAttribute('data-service');
+                const price = this.getAttribute('data-price');
+                const isPlus = this.classList.contains('plus');
+                const quantityElement = document.getElementById(`quantity-${this.closest('.service-card').dataset.index || Array.from(this.closest('.services-grid').children).indexOf(this.closest('.service-card')) + 1}`);
+                
+                let quantity = parseInt(quantityElement.textContent);
+                
+                if (isPlus) {
+                    quantity++;
+                } else {
+                    if (quantity > 1) {
+                        quantity--;
+                    }
+                }
+                
+                quantityElement.textContent = quantity;
+            });
+        });
+        
+        // Order button functionality
+        document.querySelectorAll('.order-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const service = this.getAttribute('data-service');
+                const price = this.getAttribute('data-price');
+                const card = this.closest('.service-card');
+                const quantityElement = card.querySelector('.quantity-value');
+                const quantity = quantityElement ? quantityElement.textContent : '1';
+                
+                // Create the WhatsApp message
+                const message = `I want to order: ${service} - Price: LKR ${price} - Quantity: ${quantity}`;
+                const encodedMessage = encodeURIComponent(message);
+                const whatsappUrl = `https://wa.me/94783288782?text=${encodedMessage}`;
+                
+                // Open WhatsApp with the pre-filled message
+                window.open(whatsappUrl, '_blank');
+            });
+        });
+        
+        // Add index to service cards for quantity selector
+        document.querySelectorAll('.service-card').forEach((card, index) => {
+            card.dataset.index = index + 1;
         });
         
         // Add scroll animation to elements
